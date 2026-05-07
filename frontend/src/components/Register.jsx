@@ -10,7 +10,9 @@ const Register = ({ onRegister, onSwitch }) => {
     college: 'AEC',
     branch: 'CSE' 
   });
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const colleges = ["AEC", "JEC", "JIST", "BBEC", "BVEC", "GEC", "DEC", "GIMIT"];
 
@@ -21,6 +23,8 @@ const Register = ({ onRegister, onSwitch }) => {
       return;
     }
 
+    setLoading(true);
+    setError('');
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
     try {
       const res = await fetch(`${apiBaseUrl}/auth/register`, {
@@ -36,13 +40,18 @@ const Register = ({ onRegister, onSwitch }) => {
         })
       });
       if (res.ok) {
-        onSwitch();
+        setSuccess('Registration successful! Redirecting to login...');
+        setTimeout(() => {
+          onRegister();
+        }, 2000);
       } else {
         const msg = await res.text();
         setError(msg || 'Registration failed');
+        setLoading(false);
       }
     } catch (err) {
       setError('Server connection failed');
+      setLoading(false);
     }
   };
 
@@ -141,8 +150,11 @@ const Register = ({ onRegister, onSwitch }) => {
           </div>
 
           {error && <p className="error-text">{error}</p>}
+          {success && <p className="success-text" style={{ color: 'var(--accent-color)', textAlign: 'center', marginBottom: '1rem' }}>{success}</p>}
           
-          <button type="submit" className="btn-primary">Create Account</button>
+          <button type="submit" className="btn-primary" disabled={loading}>
+            {loading ? 'Creating Account...' : 'Create Account'}
+          </button>
         </form>
 
         <div className="divider">OR</div>
