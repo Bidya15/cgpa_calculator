@@ -1,0 +1,425 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  /* Dark Theme (Default) */
+  --primary: #6366f1;
+  --primary-light: #818cf8;
+  --primary-dark: #4f46e5;
+  --bg-dark: #0f172a;
+  --bg-card: rgba(30, 41, 59, 0.7);
+  --text-main: #f8fafc;
+  --text-secondary: #94a3b8;
+  --accent-glow: rgba(99, 102, 241, 0.15);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --success: #10b981;
+  --warning: #f59e0b;
+  --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  --nav-bg: rgba(15, 23, 42, 0.6);
+}
+
+[data-theme='light'] {
+  --bg-dark: #f8fafc;
+  --bg-card: rgba(255, 255, 255, 0.8);
+  --text-main: #1e293b;
+  --text-secondary: #64748b;
+  --accent-glow: rgba(99, 102, 241, 0.05);
+  --border-color: rgba(0, 0, 0, 0.08);
+  --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --nav-bg: rgba(255, 255, 255, 0.7);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Outfit', sans-serif;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.5;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dynamic Background Glows */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 30%, var(--accent-glow), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(129, 140, 248, 0.05), transparent 40%);
+  z-index: -1;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Glass Components */
+.glass-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: var(--nav-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  margin-bottom: 2rem;
+  position: sticky;
+  top: 1rem;
+  z-index: 100;
+  box-shadow: var(--card-shadow);
+}
+
+.card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 3rem;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 0.875rem 1.75rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+}
+
+.btn-secondary {
+  background: rgba(148, 163, 184, 0.1);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(148, 163, 184, 0.2);
+}
+
+.theme-toggle {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  color: var(--text-main);
+}
+
+.theme-toggle:hover {
+  background: rgba(148, 163, 184, 0.1);
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.dashboard-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 2.5rem;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-12px);
+  border-color: var(--primary-light);
+  background: var(--bg-card);
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-card .icon-box {
+  width: 72px;
+  height: 72px;
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: var(--primary);
+  margin: 0 auto 1.5rem auto;
+}
+
+/* Form Styles */
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+select, input {
+  background: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.875rem 1rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  width: 100%;
+}
+
+/* Table Styles */
+.cgpa-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cgpa-table th {
+  padding: 1.25rem 1rem;
+  text-align: left;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.cgpa-row td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Results Display */
+.sgpa-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sgpa-display .label {
+  color: var(--text-secondary);
+}
+
+.sgpa-display .value {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--primary-light);
+}
+
+.badge {
+  padding: 0.375rem 0.75rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+.badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+
+.logo-text {
+  font-weight: 800;
+  background: linear-gradient(to right, var(--primary), var(--primary-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Logo Ticker */
+.logo-ticker {
+  overflow: hidden;
+  padding: 1.5rem 0;
+  background: transparent;
+  white-space: nowrap;
+  position: relative;
+  width: 100%;
+}
+
+.logo-ticker::before, .logo-ticker::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 150px;
+  height: 100%;
+  z-index: 2;
+}
+
+.logo-ticker::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg-dark), transparent);
+}
+
+.logo-ticker::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg-dark), transparent);
+}
+
+.ticker-content {
+  display: inline-flex;
+  gap: 4rem;
+  animation: scroll 30s linear infinite;
+}
+
+.ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  color: var(--text-secondary);
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.college-icon-uniform {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  padding: 5px;
+}
+
+.college-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* Blend white backgrounds for cleaner look */
+  mix-blend-mode: multiply; 
+  filter: brightness(1.1);
+}
+
+[data-theme='dark'] .college-logo-img {
+  /* In dark mode, multiply might not work well on black. 
+     If logos have white backgrounds, we can't easily remove them via CSS perfectly,
+     but we can brighten them. */
+  mix-blend-mode: normal;
+  filter: brightness(1.2) contrast(1.1);
+}
+
+.college-ticker-name {
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .container { 
+    padding: 1rem; 
+    padding-top: 0.5rem;
+  }
+  .card { 
+    padding: 1.5rem; 
+    border-radius: 20px;
+  }
+  .glass-nav {
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1.5rem;
+    top: 0.5rem;
+  }
+  .dashboard-card {
+    padding: 1.75rem;
+  }
+  .dashboard-card .icon-box {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+  }
+  .auth-header h2 {
+    font-size: 2rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-user {
+    display: none !important;
+  }
+  .ticker-item {
+    gap: 0.75rem;
+    font-size: 0.9rem;
+  }
+  .college-icon-uniform {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.credit-badge {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary);
+  padding: 0.4rem 0.8rem;
+  border-radius: 100px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  display: inline-block;
+}
+
+[data-theme='light'] .credit-badge {
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
