@@ -1,5 +1,10 @@
 package com.unicalc.controller;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 import com.unicalc.model.User;
 import com.unicalc.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -36,9 +44,43 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody User loginRequest) {
         Optional<User> userOpt = userRepository.findByUsername(loginRequest.getUsername());
         if (userOpt.isPresent() && passwordEncoder.matches(loginRequest.getPassword(), userOpt.get().getPassword())) {
-            // In a real app, you'd return a JWT here
             return ResponseEntity.ok(userOpt.get());
         }
         return ResponseEntity.status(401).body("Invalid credentials");
+    }
+
+    @PostMapping("/google-login")
+    public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> data) {
+        String idTokenString = data.get("token");
+        
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
+            .setAudience(Collections.singletonList("414100923470-q5al9v0ogrp49sl9sjbvrfipj1e0tr2h.apps.googleusercontent.com"))
+            .build();
+
+        try {
+            GoogleIdToken idToken = verifier.verify(idTokenString);
+            if (idToken != null) {
+                Payload payload = idToken.getPayload();
+                String email = payload.getEmail();
+                String name = (String) payload.get("name");
+
+                Optional<User> userOpt = userRepository.findByEmail(email);
+                if (userOpt.isPresent()) {
+                    return ResponseEntity.ok(userOpt.get());
+                } else {
+                    // Create new user for Google login
+                    User newUser = new User();
+                    newUser.setEmail(email);
+                    newUser.setName(name);
+                    newUser.setUsername(email.split("@")[0] + "_" + UUID.randomUUID().toString().substring(0, 4));
+                    newUser.setPassword(passwordEncoder.encode(UUID.randomUUID().toString())); // Random password
+                    newUser.setBranch("N/A"); // Default
+                    return ResponseEntity.ok(userRepository.save(newUser));
+                }
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Invalid Google Token");
+        }
+        return ResponseEntity.status(401).body("Verification failed");
     }
 }

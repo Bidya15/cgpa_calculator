@@ -53,6 +53,7 @@ const Register = ({ onRegister, onSwitch }) => {
     <div className="auth-container animate-fade-in">
       <div className="auth-card">
         <div className="auth-header">
+          <div className="logo-text" style={{fontSize: '2.5rem', marginBottom: '0.5rem'}}>UniCalc</div>
           <h2>Join UniCalc</h2>
           <p>Create your academic profile</p>
         </div>
@@ -91,7 +92,7 @@ const Register = ({ onRegister, onSwitch }) => {
             />
           </div>
 
-          <div className="form-grid" style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem'}}>
+          <div className="form-grid">
             <div className="form-group">
               <label>College</label>
               <select value={formData.college} onChange={(e) => setFormData({...formData, college: e.target.value})}>
@@ -101,16 +102,21 @@ const Register = ({ onRegister, onSwitch }) => {
             <div className="form-group">
               <label>Branch</label>
               <select value={formData.branch} onChange={(e) => setFormData({...formData, branch: e.target.value})}>
-                <option value="CSE">CSE</option>
-                <option value="CE">Civil</option>
-                <option value="ME">Mechanical</option>
-                <option value="EE">Electrical</option>
-                <option value="ECE">ECE</option>
+                <option value="CSE">Computer Science (CSE)</option>
+                <option value="CE">Civil Engineering (CE)</option>
+                <option value="ME">Mechanical Engineering (ME)</option>
+                <option value="EE">Electrical Engineering (EE)</option>
+                <option value="ECE">Electronics & Comm. (ECE)</option>
+                <option value="IE">Instrumentation (IE)</option>
+                <option value="CH">Chemical Engineering (CH)</option>
+                <option value="IPE">Industrial & Prod. (IPE)</option>
+                <option value="BT">Biotechnology (BT)</option>
+                <option value="PE">Power Electronics (PE)</option>
               </select>
             </div>
           </div>
 
-          <div className="form-grid" style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem'}}>
+          <div className="form-grid">
             <div className="form-group">
               <label>Password</label>
               <input 
@@ -133,24 +139,20 @@ const Register = ({ onRegister, onSwitch }) => {
             </div>
           </div>
 
-          {error && <p className="error-text" style={{color: '#ef4444', textAlign: 'center', fontSize: '0.85rem'}}>{error}</p>}
+          {error && <p className="error-text">{error}</p>}
           
-          <button type="submit" className="btn-primary" style={{width: '100%', marginTop: '0.5rem'}}>Create Account</button>
+          <button type="submit" className="btn-primary">Create Account</button>
         </form>
 
-        <div className="divider" style={{margin: '1.5rem 0', display: 'flex', alignItems: 'center', color: 'var(--text-secondary)', fontSize: '0.8rem'}}>
-          <div style={{flex: 1, height: '1px', background: 'var(--border-color)'}}></div>
-          <span style={{padding: '0 1rem'}}>OR</span>
-          <div style={{flex: 1, height: '1px', background: 'var(--border-color)'}}></div>
-        </div>
+        <div className="divider">OR</div>
 
-        <button className="btn-secondary" onClick={handleGoogleLogin} style={{width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem'}}>
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" alt="Google" width="18" />
+        <button className="btn-google" onClick={handleGoogleLogin}>
+          <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google" />
           Continue with Google
         </button>
 
-        <div className="auth-footer" style={{marginTop: '2rem', textAlign: 'center', fontSize: '0.9rem', color: 'var(--text-secondary)'}}>
-          Already a member? <span onClick={onSwitch} style={{color: 'var(--primary)', fontWeight: '600', cursor: 'pointer'}}>Login</span>
+        <div className="auth-footer">
+          Already a member? <span onClick={onSwitch}>Login</span>
         </div>
       </div>
     </div>

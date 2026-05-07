@@ -1,0 +1,42 @@
+services:
+  # 1. Backend Web Service
+  - type: web
+    name: unicalc-backend
+    env: java
+    plan: free
+    rootDir: backend
+    buildCommand: chmod +x mvnw && ./mvnw clean install -DskipTests
+    startCommand: java -jar target/*.jar
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: unicalc-db
+          property: jdbcInternalUrl
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: unicalc-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: unicalc-db
+          property: password
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update
+
+  # 2. Frontend Static Site
+  - type: static
+    name: unicalc-frontend
+    env: static
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://unicalc-backend.onrender.com/api
+
+databases:
+  - name: unicalc-db
+    plan: free
+    databaseName: unicalc_db
+    user: unicalc_user
