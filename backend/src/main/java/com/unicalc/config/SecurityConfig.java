@@ -37,7 +37,9 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:5173"); // Vite default
+        config.addAllowedOrigin("http://localhost:5173");
+        config.addAllowedOrigin("https://unicalc-frontend.onrender.com");
+        config.addAllowedOrigin("https://unicalc-frontend.onrender.com/");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);

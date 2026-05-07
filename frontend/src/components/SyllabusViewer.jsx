@@ -104,7 +104,9 @@ const SyllabusViewer = ({ setView, theme }) => {
     const fileName = `${semStr} sem ${selectedBranch} ${schemaName}.pdf`;
     
     // Requesting from Backend Syllabus Repository
-    const fileUrl = `http://localhost:8080/syllabus/${fileName}`;
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+    const backendUrl = apiBaseUrl.replace('/api', '');
+    const fileUrl = `${backendUrl}/syllabus/${fileName}`;
     
     const link = document.createElement('a');
     link.href = fileUrl;
