@@ -83,4 +83,31 @@ public class AuthController {
         }
         return ResponseEntity.status(401).body("Verification failed");
     }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
+        String username = request.get("username");
+        String email = request.get("email");
+        
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isPresent() && userOpt.get().getEmail().equalsIgnoreCase(email)) {
+            return ResponseEntity.ok("Verification successful");
+        }
+        return ResponseEntity.badRequest().body("Username and email do not match");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
+        String username = request.get("username");
+        String newPassword = request.get("newPassword");
+        
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            return ResponseEntity.ok("Password reset successfully");
+        }
+        return ResponseEntity.badRequest().body("User not found");
+    }
 }
