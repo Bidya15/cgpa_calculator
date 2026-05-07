@@ -1,12 +1,11 @@
 services:
-  # 1. Backend Web Service
+  # 1. Backend Web Service (Using Docker)
   - type: web
     name: unicalc-backend
-    env: java
+    env: docker
     plan: free
     rootDir: backend
-    buildCommand: chmod +x mvnw && ./mvnw clean install -DskipTests
-    startCommand: java -jar target/*.jar
+    dockerfilePath: Dockerfile
     envVars:
       - key: SPRING_DATASOURCE_URL
         fromDatabase:
@@ -22,15 +21,18 @@ services:
           property: password
       - key: SPRING_JPA_HIBERNATE_DDL_AUTO
         value: update
+      - key: APP_JWT_SECRET
+        generateValue: true
+      - key: GOOGLE_CLIENT_ID
+        value: 414100923470-q5al9v0ogrp49sl9sjbvrfipj1e0tr2h.apps.googleusercontent.com
 
-  # 2. Frontend Static Site
-  - type: static
+  # 2. Frontend Static Site (Using Docker/Nginx)
+  - type: web # Changed from static to web to support Docker
     name: unicalc-frontend
-    env: static
+    env: docker
     plan: free
     rootDir: frontend
-    buildCommand: npm install && npm run build
-    publishDir: dist
+    dockerfilePath: Dockerfile
     envVars:
       - key: VITE_API_BASE_URL
         value: https://unicalc-backend.onrender.com/api
