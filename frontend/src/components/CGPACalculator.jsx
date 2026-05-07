@@ -266,8 +266,8 @@ const CGPACalculator = ({ setView, theme, toggleTheme }) => {
 
               <div style={{ marginTop: '2.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem', width: '100%' }}>
                 <div style={{ padding: '1.5rem', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '20px', border: '1px solid rgba(16, 185, 129, 0.1)', textAlign: 'center' }}>
-                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>ASTU Percentage</span>
-                  <h4 style={{ fontSize: '1.8rem', color: '#10b981', margin: 0, fontWeight: '900' }}>{((parseFloat(cgpaResult.cgpa) - 0.5) * 10).toFixed(1)}%</h4>
+                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Percentage</span>
+                  <h4 style={{ fontSize: '1.8rem', color: '#10b981', margin: 0, fontWeight: '900' }}>{(parseFloat(cgpaResult.cgpa) * 10).toFixed(1)}%</h4>
                 </div>
 
                 <div style={{ padding: '1.5rem', background: 'rgba(148, 163, 184, 0.05)', borderRadius: '20px', border: '1px solid var(--border-color)', textAlign: 'center' }}>
