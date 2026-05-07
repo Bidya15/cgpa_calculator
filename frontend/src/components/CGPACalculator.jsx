@@ -10,10 +10,11 @@ const CGPACalculator = ({ setView, theme, toggleTheme }) => {
     semesters: Array.from({ length: 8 }, (_, i) => ({
       sem: i + 1,
       sgpa: '',
-      credits: 0
+      credits: '' // Changed to empty string for manual entry support
     }))
   });
   const [cgpaResult, setCgpaResult] = useState(null);
+  const [showWarning, setShowWarning] = useState(false);
 
   // Auto-fill Group based on Branch for Sem 1 & 2
   useEffect(() => {
@@ -24,7 +25,7 @@ const CGPACalculator = ({ setView, theme, toggleTheme }) => {
     setGroup(foundGroup);
   }, [branch, schema]);
 
-  // Update credits when branch/schema changes
+  // Auto-load credits when branch/schema changes, but keep them editable
   useEffect(() => {
     const newSems = cgpaForm.semesters.map(s => {
       let credits = 0;
@@ -40,24 +41,24 @@ const CGPACalculator = ({ setView, theme, toggleTheme }) => {
       } catch (err) {
         console.error("Credit calc error", err);
       }
-      return { ...s, credits };
+      return { ...s, credits: credits || '' };
     });
     setCgpaForm(prev => ({ ...prev, semesters: newSems }));
   }, [schema, branch, group]);
 
-  const [showWarning, setShowWarning] = useState(false);
-
-  // Calculate CGPA
+  // Calculate CGPA based on Formula: Σ(SGPAi * NSCi) / Σ(NSCi)
   const handleCalculate = () => {
     let totalWeightedSGPA = 0;
     let totalCredits = 0;
     let hasMissing = false;
 
-    cgpaForm.semesters.slice(0, cgpaForm.numSemesters).forEach(sem => {
+    const activeSemesters = cgpaForm.semesters.slice(0, cgpaForm.numSemesters);
+
+    activeSemesters.forEach(sem => {
       const sgpa = parseFloat(sem.sgpa);
       const credits = parseFloat(sem.credits);
 
-      if (isNaN(sgpa) || sgpa <= 0) {
+      if (isNaN(sgpa) || sgpa <= 0 || isNaN(credits) || credits <= 0) {
         hasMissing = true;
       } else {
         totalWeightedSGPA += (sgpa * credits);
@@ -68,14 +69,20 @@ const CGPACalculator = ({ setView, theme, toggleTheme }) => {
     if (hasMissing) {
       setShowWarning(true);
       setCgpaResult(null);
-      // Auto-hide warning after 3 seconds
       setTimeout(() => setShowWarning(false), 3000);
       return;
     }
 
     if (totalCredits > 0) {
-      const cgpa = (totalWeightedSGPA / totalCredits).toFixed(2);
-      setCgpaResult({ cgpa, totalCredits, totalWeightedSGPA });
+      // Calculate and round to 2 decimal points
+      const rawCgpa = totalWeightedSGPA / totalCredits;
+      const roundedCgpa = (Math.round(rawCgpa * 100) / 100).toFixed(2);
+      
+      setCgpaResult({ 
+        cgpa: roundedCgpa, 
+        totalCredits, 
+        totalWeightedSGPA: totalWeightedSGPA.toFixed(2) 
+      });
       setShowWarning(false);
     }
   };
@@ -117,14 +124,17 @@ const CGPACalculator = ({ setView, theme, toggleTheme }) => {
           gap: '1rem'
         }}>
           <span>⚠️</span>
-          <span>Input Required: Please enter valid SGPAs for all semesters.</span>
+          <span>Missing Data: Enter SGPA and Credits for all semesters.</span>
         </div>
       )}
 
       <div className="card animate-fade-in" style={{ marginTop: '1.5rem', maxWidth: '900px', margin: '1.5rem auto', padding: 'clamp(1rem, 5vw, 3rem)', borderRadius: '24px' }}>
         <div className="card-header" style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <h2 style={{ fontSize: 'clamp(1.8rem, 6vw, 2.5rem)', marginBottom: '0.5rem' }}>Academic Aggregate</h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Live weighted calculation based on ASTU syllabus credits</p>
+          <div style={{ display: 'inline-block', padding: '4px 12px', background: 'rgba(99, 102, 241, 0.1)', color: 'var(--primary)', borderRadius: '100px', fontSize: '0.75rem', fontWeight: 'bold', marginBottom: '1rem' }}>
+            Σ(SGPAi × NSCi) / Σ(NSCi)
+          </div>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Official weighted calculation formula applied</p>
         </div>
 
         <div className="form-grid" style={{
@@ -146,7 +156,7 @@ const CGPACalculator = ({ setView, theme, toggleTheme }) => {
             </select>
           </div>
           <div className="form-group">
-            <label style={{ fontSize: '0.8rem', opacity: 0.7 }}>Analysis Range</label>
+            <label style={{ fontSize: '0.8rem', opacity: 0.7 }}>Semesters Completed</label>
             <select value={cgpaForm.numSemesters} onChange={(e) => { setCgpaForm({ ...cgpaForm, numSemesters: parseInt(e.target.value) }); setCgpaResult(null); }}>
               {[1, 2, 3, 4, 5, 6, 7, 8].map(n => <option key={n} value={n}>{n} Semesters</option>)}
             </select>
@@ -158,16 +168,36 @@ const CGPACalculator = ({ setView, theme, toggleTheme }) => {
             <thead>
               <tr style={{ textAlign: 'left', background: 'rgba(148, 163, 184, 0.05)', color: 'var(--text-secondary)', fontSize: '0.8rem' }}>
                 <th style={{ padding: '1rem' }}>SEMESTER</th>
-                <th style={{ padding: '1rem', textAlign: 'center' }}>CREDITS</th>
-                <th style={{ padding: '1rem', textAlign: 'right' }}>SGPA SCORE</th>
+                <th style={{ padding: '1rem', textAlign: 'center' }}>NSCi (CREDITS)</th>
+                <th style={{ padding: '1rem', textAlign: 'right' }}>SGPAi SCORE</th>
               </tr>
             </thead>
             <tbody>
               {cgpaForm.semesters.slice(0, cgpaForm.numSemesters).map((sem, idx) => (
                 <tr key={idx} className="cgpa-row" style={{ borderBottom: '1px solid var(--border-color)' }}>
-                  <td style={{ padding: '1rem', fontWeight: '700', fontSize: '0.95rem' }}>Sem {sem.sem}</td>
+                  <td style={{ padding: '1rem', fontWeight: '700', fontSize: '0.95rem' }}>Semester {sem.sem}</td>
                   <td style={{ padding: '1rem', textAlign: 'center' }}>
-                    <span className="credit-badge" style={{ fontSize: '0.85rem' }}>{sem.credits}</span>
+                    <input
+                      type="number"
+                      placeholder="Credits"
+                      style={{
+                        background: 'rgba(99, 102, 241, 0.05)',
+                        border: '1px solid var(--border-color)',
+                        color: 'var(--primary)',
+                        padding: '0.5rem',
+                        borderRadius: '8px',
+                        width: '70px',
+                        textAlign: 'center',
+                        fontWeight: '700'
+                      }}
+                      value={sem.credits}
+                      onChange={(e) => {
+                        const newSems = [...cgpaForm.semesters];
+                        newSems[idx].credits = e.target.value;
+                        setCgpaForm({ ...cgpaForm, semesters: newSems });
+                        setCgpaResult(null);
+                      }}
+                    />
                   </td>
                   <td style={{ padding: '1rem', textAlign: 'right' }}>
                     <input
@@ -207,7 +237,7 @@ const CGPACalculator = ({ setView, theme, toggleTheme }) => {
             onClick={handleCalculate}
             style={{ width: '100%', padding: '1.25rem', borderRadius: '16px', fontSize: '1.1rem', fontWeight: '800' }}
           >
-            Calculate Aggregate Score
+            Calculate CGPA
           </button>
         </div>
 
@@ -221,7 +251,7 @@ const CGPACalculator = ({ setView, theme, toggleTheme }) => {
             overflow: 'hidden',
             boxShadow: '0 20px 50px -20px rgba(99, 102, 241, 0.2)'
           }}>
-            <div style={{ position: 'absolute', top: 0, right: 0, padding: '0.5rem 1rem', background: 'var(--primary)', color: '#fff', fontSize: '0.65rem', fontWeight: '900', borderBottomLeftRadius: '12px', letterSpacing: '1px' }}>LIVE ANALYSIS</div>
+            <div style={{ position: 'absolute', top: 0, right: 0, padding: '0.5rem 1rem', background: 'var(--primary)', color: '#fff', fontSize: '0.65rem', fontWeight: '900', borderBottomLeftRadius: '12px', letterSpacing: '1px' }}>FINAL SCORE</div>
 
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <span style={{ color: 'var(--primary)', fontWeight: '800', marginBottom: '0.5rem', letterSpacing: '1px', fontSize: '0.9rem', opacity: 0.8 }}>AGGREGATE CGPA</span>
@@ -229,12 +259,12 @@ const CGPACalculator = ({ setView, theme, toggleTheme }) => {
 
               <div style={{ marginTop: '2.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem', width: '100%' }}>
                 <div style={{ padding: '1.5rem', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '20px', border: '1px solid rgba(16, 185, 129, 0.1)', textAlign: 'center' }}>
-                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Percentage</span>
+                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>ASTU Percentage</span>
                   <h4 style={{ fontSize: '1.8rem', color: '#10b981', margin: 0, fontWeight: '900' }}>{((parseFloat(cgpaResult.cgpa) - 0.5) * 10).toFixed(1)}%</h4>
                 </div>
 
                 <div style={{ padding: '1.5rem', background: 'rgba(148, 163, 184, 0.05)', borderRadius: '20px', border: '1px solid var(--border-color)', textAlign: 'center' }}>
-                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Total Credits</span>
+                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Total Credits (ΣNSCi)</span>
                   <h4 style={{ fontSize: '1.8rem', color: 'var(--text-main)', margin: 0, fontWeight: '900' }}>{cgpaResult.totalCredits}</h4>
                 </div>
               </div>

@@ -101,17 +101,18 @@ const SyllabusViewer = ({ setView, theme }) => {
   const downloadOfficial = () => {
     const semStr = getOrdinal(selectedSemester);
     const schemaName = selectedSchema === 'OLD' ? 'Old' : 'NEP';
+    const subFolder = selectedSchema === 'OLD' ? 'old-Course' : 'NEP';
     const fileName = `${semStr} sem ${selectedBranch} ${schemaName}.pdf`;
     
     // Requesting from Backend Syllabus Repository
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
     const backendUrl = apiBaseUrl.replace('/api', '');
-    const fileUrl = `${backendUrl}/syllabus/${fileName}`;
+    const fileUrl = `${backendUrl}/syllabus/${subFolder}/${fileName}`;
     
     const link = document.createElement('a');
     link.href = fileUrl;
     link.download = fileName;
-    link.target = "_blank"; // Open in new tab if download is blocked
+    link.target = "_blank"; // Open in new tab for better UX
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
