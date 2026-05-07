@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
+import { Eye, EyeOff } from 'lucide-react';
 
 const Login = ({ onLogin, onSwitch }) => {
   const [formData, setFormData] = useState({ username: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
@@ -72,13 +74,45 @@ const Login = ({ onLogin, onSwitch }) => {
           </div>
           <div className="form-group">
             <label>Password</label>
-            <input
-              type="password"
-              placeholder="Enter your password"
-              value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              required
-            />
+            <div className="password-input-wrapper" style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                required
+                style={{ paddingRight: '2.5rem' }}
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '0.75rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--text-secondary)',
+                  cursor: 'pointer',
+                  padding: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
+          <div className="forgot-password" style={{ textAlign: 'right', marginTop: '-0.5rem', marginBottom: '1rem' }}>
+            <span 
+              onClick={() => alert("Forgot password functionality is coming soon! Please contact the administrator.")}
+              style={{ fontSize: '0.85rem', color: 'var(--accent-color)', cursor: 'pointer' }}
+            >
+              Forgot Password?
+            </span>
           </div>
           {error && <p className="error-text">{error}</p>}
           <button type="submit" className="btn-primary">Sign In</button>
