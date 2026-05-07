@@ -163,8 +163,15 @@ const CGPACalculator = ({ setView, theme, toggleTheme }) => {
           </div>
         </div>
 
-        <div className="table-responsive" style={{ marginBottom: '2.5rem', borderRadius: '16px', border: '1px solid var(--border-color)', overflow: 'hidden', background: 'var(--bg-dark)' }}>
-          <table className="cgpa-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <div className="table-responsive" style={{ 
+          marginBottom: '2.5rem', 
+          borderRadius: '16px', 
+          border: '1px solid var(--border-color)', 
+          overflowX: 'auto', 
+          background: 'var(--bg-dark)',
+          WebkitOverflowScrolling: 'touch' // Smooth scrolling for iOS
+        }}>
+          <table className="cgpa-table" style={{ width: '100%', minWidth: '600px', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ textAlign: 'left', background: 'rgba(148, 163, 184, 0.05)', color: 'var(--text-secondary)', fontSize: '0.8rem' }}>
                 <th style={{ padding: '1rem' }}>SEMESTER</th>

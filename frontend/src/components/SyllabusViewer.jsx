@@ -120,19 +120,62 @@ const SyllabusViewer = ({ setView, theme }) => {
 
   return (
     <div className="container animate-fade-in" style={{ paddingBottom: '4rem' }}>
-      <nav className="glass-nav">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <button className="btn-secondary" onClick={() => setView('dashboard')} style={{ padding: '0.5rem' }}>← Back</button>
-          <h1 className="logo-text">Syllabus Repository</h1>
+      <nav className="glass-nav" style={{ 
+        flexDirection: 'column', 
+        alignItems: 'stretch', 
+        gap: '1rem',
+        padding: '1rem'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+            <button className="btn-secondary" onClick={() => setView('dashboard')} style={{ padding: '0.5rem 1rem' }}>← Back</button>
+            <h1 className="logo-text" style={{ fontSize: 'clamp(1rem, 4vw, 1.5rem)' }}>Syllabus Vault</h1>
+          </div>
         </div>
-        <div className="nav-actions" style={{ display: 'flex', gap: '0.5rem' }}>
-          <button className="btn-primary" onClick={downloadOfficial} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.8rem 1.5rem', borderRadius: '14px' }}>
-            <Download size={20} />
-            Download Official PDF
+        
+        <div className="nav-actions" style={{ 
+          display: 'flex', 
+          gap: '0.5rem', 
+          width: '100%',
+          flexWrap: 'wrap'
+        }}>
+          <button 
+            className="btn-primary" 
+            onClick={downloadOfficial} 
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              gap: '0.5rem', 
+              padding: '0.75rem', 
+              borderRadius: '12px',
+              flex: '1',
+              minWidth: '160px',
+              fontSize: '0.85rem'
+            }}
+          >
+            <Download size={18} />
+            Official PDF
           </button>
-          <button className="btn-secondary" onClick={downloadPDF} disabled={currentSyllabus.length === 0} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', opacity: 0.8 }}>
+          <button 
+            className="btn-secondary" 
+            onClick={downloadPDF} 
+            disabled={currentSyllabus.length === 0} 
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              gap: '0.5rem', 
+              padding: '0.75rem',
+              borderRadius: '12px',
+              flex: '1',
+              minWidth: '160px',
+              fontSize: '0.85rem',
+              opacity: 0.8
+            }}
+          >
             <Printer size={16} />
-            Generate Summary
+            Summary
           </button>
         </div>
       </nav>
@@ -191,9 +234,9 @@ const SyllabusViewer = ({ setView, theme }) => {
           </div>
         </div>
 
-        <div style={{ padding: '1rem', overflowX: 'auto' }}>
+        <div style={{ padding: '1rem', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
           {currentSyllabus.length > 0 ? (
-            <table className="calc-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <table className="calc-table" style={{ width: '100%', minWidth: '600px', borderCollapse: 'collapse' }}>
               <thead>
                 <tr>
                   <th style={{ textAlign: 'left', padding: '1rem' }}>#</th>

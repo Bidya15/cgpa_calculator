@@ -10,6 +10,8 @@ import gecLogo from '../assets/GEC.png';
 import decLogo from '../assets/DEC.png';
 
 const Dashboard = ({ user, setView, theme, toggleTheme, onLogout }) => {
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
   const colleges = [
     { id: "aec", name: "AEC", logo: aecLogo },
     { id: "jec", name: "JEC", logo: jecLogo },
@@ -24,7 +26,9 @@ const Dashboard = ({ user, setView, theme, toggleTheme, onLogout }) => {
     <div className="container animate-fade-in">
       <nav className="glass-nav">
         <h1 className="logo-text">UniCalc Portal</h1>
-        <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+        
+        {/* Desktop Navigation */}
+        <div className="nav-actions-desktop" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
           <button className="theme-toggle" onClick={toggleTheme} title="Toggle Theme">
             {theme === 'dark' ? '☀️' : '🌙'}
           </button>
@@ -33,6 +37,36 @@ const Dashboard = ({ user, setView, theme, toggleTheme, onLogout }) => {
               Welcome, <b style={{ color: 'var(--text-main)' }}>{user.name}</b>
             </span>
             <button className="btn-secondary" onClick={onLogout}>Logout</button>
+          </div>
+        </div>
+
+        {/* Mobile Menu Toggle */}
+        <button 
+          className={`menu-toggle ${isMenuOpen ? 'active' : ''}`} 
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Toggle Menu"
+        >
+          <div className="bar"></div>
+          <div className="bar"></div>
+          <div className="bar"></div>
+        </button>
+
+        {/* Mobile Menu Overlay */}
+        <div className={`mobile-menu ${isMenuOpen ? 'open' : ''}`}>
+          <div className="mobile-menu-content">
+            <div className="mobile-user-info">
+              <span className="mobile-welcome">Welcome,</span>
+              <span className="mobile-username">{user.name}</span>
+            </div>
+            
+            <div className="mobile-menu-items">
+              <button className="mobile-menu-btn" onClick={() => { toggleTheme(); setIsMenuOpen(false); }}>
+                <span>{theme === 'dark' ? 'Light Mode ☀️' : 'Dark Mode 🌙'}</span>
+              </button>
+              <button className="mobile-menu-btn logout" onClick={onLogout}>
+                <span>Logout</span>
+              </button>
+            </div>
           </div>
         </div>
       </nav>

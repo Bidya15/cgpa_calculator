@@ -213,8 +213,14 @@ const SGPACalculator = ({ setView, theme, toggleTheme }) => {
             )}
           </div>
 
-          <div className="table-responsive" style={{ overflowX: 'auto', borderRadius: '16px', border: '1px solid var(--border-color)', background: 'var(--bg-dark)' }}>
-            <table className="cgpa-table" style={{ minWidth: '850px', borderCollapse: 'collapse' }}>
+          <div className="table-responsive" style={{ 
+            overflowX: 'auto', 
+            borderRadius: '16px', 
+            border: '1px solid var(--border-color)', 
+            background: 'var(--bg-dark)',
+            WebkitOverflowScrolling: 'touch'
+          }}>
+            <table className="cgpa-table" style={{ minWidth: '700px', width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ textAlign: 'left', background: 'rgba(148, 163, 184, 0.05)', borderBottom: '1px solid var(--border-color)' }}>
                   <th style={{ padding: '1rem', width: '50px' }}>#</th>
