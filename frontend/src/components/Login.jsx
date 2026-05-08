@@ -109,10 +109,10 @@ const Login = ({ onLogin, onSwitch }) => {
           {resetState === 'login' && (
             <>
               <div className="form-group">
-                <label>Username</label>
+                <label>Username or Email</label>
                 <input
                   type="text"
-                  placeholder="Enter your username"
+                  placeholder="Enter username or email"
                   value={formData.username}
                   onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                   required

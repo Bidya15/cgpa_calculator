@@ -42,7 +42,10 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User loginRequest) {
-        Optional<User> userOpt = userRepository.findByUsername(loginRequest.getUsername());
+        // Allow login with either username or email
+        String identifier = loginRequest.getUsername();
+        Optional<User> userOpt = userRepository.findByUsernameOrEmail(identifier, identifier);
+        
         if (userOpt.isPresent() && passwordEncoder.matches(loginRequest.getPassword(), userOpt.get().getPassword())) {
             return ResponseEntity.ok(userOpt.get());
         }

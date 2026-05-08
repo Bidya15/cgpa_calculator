@@ -50,26 +50,26 @@ const Dashboard = ({ user, setView, theme, toggleTheme, onLogout }) => {
           <div className="bar"></div>
           <div className="bar"></div>
         </button>
+      </nav>
 
-        {/* Mobile Menu Overlay */}
-        <div className={`mobile-menu ${isMenuOpen ? 'open' : ''}`}>
-          <div className="mobile-menu-content">
-            <div className="mobile-user-info">
-              <span className="mobile-welcome">Welcome,</span>
-              <span className="mobile-username">{user.name}</span>
-            </div>
-            
-            <div className="mobile-menu-items">
-              <button className="mobile-menu-btn" onClick={() => { toggleTheme(); setIsMenuOpen(false); }}>
-                <span>{theme === 'dark' ? 'Light Mode ☀️' : 'Dark Mode 🌙'}</span>
-              </button>
-              <button className="mobile-menu-btn logout" onClick={onLogout}>
-                <span>Logout</span>
-              </button>
-            </div>
+      {/* Mobile Menu Overlay */}
+      <div className={`mobile-menu ${isMenuOpen ? 'open' : ''}`}>
+        <div className="mobile-menu-content">
+          <div className="mobile-user-info">
+            <span className="mobile-welcome">Welcome,</span>
+            <span className="mobile-username">{user.name}</span>
+          </div>
+          
+          <div className="mobile-menu-items">
+            <button className="mobile-menu-btn" onClick={() => { toggleTheme(); setIsMenuOpen(false); }}>
+              <span>{theme === 'dark' ? 'Light Mode ☀️' : 'Dark Mode 🌙'}</span>
+            </button>
+            <button className="mobile-menu-btn logout" onClick={onLogout}>
+              <span>Logout</span>
+            </button>
           </div>
         </div>
-      </nav>
+      </div>
 
       {/* College Logo Ticker */}
       <div className="logo-ticker" style={{ marginTop: '2rem' }}>
@@ -90,7 +90,7 @@ const Dashboard = ({ user, setView, theme, toggleTheme, onLogout }) => {
       </div>
 
       <div className="auth-header" style={{ marginTop: '4rem', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '2.8rem', marginBottom: '1rem', fontWeight: '800' }}>Academic CGPA Calculator (Under ASTU)</h2>
+        <h2 className="responsive-title" style={{ marginBottom: '1rem', fontWeight: '800' }}>Academic CGPA Calculator (Under ASTU)</h2>
         <p style={{ maxWidth: '650px', margin: '0 auto', fontSize: '1.1rem', opacity: 0.8 }}>
           Analyze your performance with precision tools tailored for the <b>ASTU</b> ecosystem.
         </p>
