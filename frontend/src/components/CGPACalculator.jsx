@@ -3,10 +3,10 @@ import { COURSES, OLD_COURSE_MAPPING, NEP_COURSE_MAPPING } from '../data/courses
 
 const CGPACalculator = ({ setView, theme, toggleTheme }) => {
   const [schema, setSchema] = useState('NEP');
-  const [branch, setBranch] = useState('CSE');
+  const [branch, setBranch] = useState('');
   const [group, setGroup] = useState('GROUP_B');
   const [cgpaForm, setCgpaForm] = useState({
-    numSemesters: 1,
+    numSemesters: '',
     semesters: Array.from({ length: 8 }, (_, i) => ({
       sem: i + 1,
       sgpa: '',
@@ -18,6 +18,7 @@ const CGPACalculator = ({ setView, theme, toggleTheme }) => {
 
   // Auto-fill Group based on Branch for Sem 1 & 2
   useEffect(() => {
+    if (!branch) return;
     const mapping = schema === 'NEP' ? NEP_COURSE_MAPPING : OLD_COURSE_MAPPING;
     let foundGroup = group;
     if (mapping.GROUP_A.includes(branch)) foundGroup = 'GROUP_A';
@@ -27,6 +28,11 @@ const CGPACalculator = ({ setView, theme, toggleTheme }) => {
 
   // Auto-load credits when branch/schema changes, but keep them editable
   useEffect(() => {
+    if (!branch) {
+      const emptySems = cgpaForm.semesters.map(s => ({ ...s, credits: '' }));
+      setCgpaForm(prev => ({ ...prev, semesters: emptySems }));
+      return;
+    }
     const newSems = cgpaForm.semesters.map(s => {
       let credits = 0;
       try {
@@ -150,6 +156,7 @@ const CGPACalculator = ({ setView, theme, toggleTheme }) => {
           <div className="form-group">
             <label style={{ fontSize: '0.8rem', opacity: 0.7 }}>Engineering Branch</label>
             <select value={branch} onChange={(e) => { setBranch(e.target.value); setCgpaResult(null); }}>
+              <option value="">Select Branch</option>
               {["CSE", "CE", "ME", "EE", "ECE", "ChE", "IE", "IPE", "ETE", "PEI", "EEE"].map(b => (
                 <option key={b} value={b}>{b}</option>
               ))}
@@ -157,7 +164,8 @@ const CGPACalculator = ({ setView, theme, toggleTheme }) => {
           </div>
           <div className="form-group">
             <label style={{ fontSize: '0.8rem', opacity: 0.7 }}>Semesters Completed</label>
-            <select value={cgpaForm.numSemesters} onChange={(e) => { setCgpaForm({ ...cgpaForm, numSemesters: parseInt(e.target.value) }); setCgpaResult(null); }}>
+            <select value={cgpaForm.numSemesters} onChange={(e) => { setCgpaForm({ ...cgpaForm, numSemesters: e.target.value ? parseInt(e.target.value) : '' }); setCgpaResult(null); }}>
+              <option value="">Select Semesters</option>
               {[1, 2, 3, 4, 5, 6, 7, 8].map(n => <option key={n} value={n}>{n} Semesters</option>)}
             </select>
           </div>

@@ -97,18 +97,18 @@ const Dashboard = ({ user, setView, theme, toggleTheme, onLogout }) => {
       </div>
 
       <div className="dashboard-grid" style={{ marginTop: '4rem' }}>
-        <div className="dashboard-card" onClick={() => setView('sgpa')}>
-          <div className="icon-box">📊</div>
-          <h3>SGPA Engine</h3>
-          <p>Detailed semester-wise grade analysis with automated curriculum mapping.</p>
-          <button className="btn-primary" style={{ marginTop: 'auto', width: '100%', borderRadius: '16px' }}>Launch Calculator</button>
-        </div>
-
         <div className="dashboard-card" onClick={() => setView('cgpa')}>
           <div className="icon-box">🏆</div>
           <h3>CGPA Aggregate</h3>
           <p>Calculate your cumulative performance and percentage conversion instantly.</p>
           <button className="btn-primary" style={{ marginTop: 'auto', width: '100%', borderRadius: '16px' }}>Launch Aggregate</button>
+        </div>
+
+        <div className="dashboard-card" onClick={() => setView('sgpa')}>
+          <div className="icon-box">📊</div>
+          <h3>SGPA Engine</h3>
+          <p>Detailed semester-wise grade analysis with automated curriculum mapping.</p>
+          <button className="btn-primary" style={{ marginTop: 'auto', width: '100%', borderRadius: '16px' }}>Launch Calculator</button>
         </div>
 
         <div className="dashboard-card" onClick={() => setView('syllabus')}>

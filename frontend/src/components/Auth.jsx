@@ -8,7 +8,16 @@ const Auth = ({ onLogin }) => {
   return authMode === 'login' ? (
     <Login onLogin={onLogin} onSwitch={() => setAuthMode('register')} />
   ) : (
-    <Register onRegister={() => setAuthMode('login')} onSwitch={() => setAuthMode('login')} />
+    <Register 
+      onRegister={(user) => {
+        if (user && user.id) {
+          onLogin(user);
+        } else {
+          setAuthMode('login');
+        }
+      }} 
+      onSwitch={() => setAuthMode('login')} 
+    />
   );
 };
 

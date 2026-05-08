@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google';
 
 const Register = ({ onRegister, onSwitch }) => {
   const [formData, setFormData] = useState({ 
@@ -8,8 +8,8 @@ const Register = ({ onRegister, onSwitch }) => {
     password: '', 
     confirmPassword: '',
     name: '', 
-    college: 'AEC',
-    branch: 'CSE' 
+    college: '',
+    branch: '' 
   });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -23,6 +23,11 @@ const Register = ({ onRegister, onSwitch }) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
+      return;
+    }
+
+    if (!formData.college || !formData.branch) {
+      setError('Please select your college and branch');
       return;
     }
 
@@ -58,8 +63,28 @@ const Register = ({ onRegister, onSwitch }) => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    alert("Google Registration is coming soon! For now, please use the form.");
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true);
+    setError('');
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+    try {
+      const res = await fetch(`${apiBaseUrl}/auth/google-login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: credentialResponse.credential })
+      });
+
+      if (res.ok) {
+        const user = await res.json();
+        onRegister(user); // Pass user data to handle login after registration
+      } else {
+        setError('Google registration failed');
+        setLoading(false);
+      }
+    } catch (err) {
+      setError('Google registration error');
+      setLoading(false);
+    }
   };
 
   return (
@@ -108,13 +133,15 @@ const Register = ({ onRegister, onSwitch }) => {
           <div className="form-grid">
             <div className="form-group">
               <label>College</label>
-              <select value={formData.college} onChange={(e) => setFormData({...formData, college: e.target.value})}>
+              <select value={formData.college} onChange={(e) => setFormData({...formData, college: e.target.value})} required>
+                <option value="" disabled>Select College</option>
                 {colleges.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div className="form-group">
               <label>Branch</label>
-              <select value={formData.branch} onChange={(e) => setFormData({...formData, branch: e.target.value})}>
+              <select value={formData.branch} onChange={(e) => setFormData({...formData, branch: e.target.value})} required>
+                <option value="" disabled>Select Branch</option>
                 <option value="CSE">Computer Science (CSE)</option>
                 <option value="CE">Civil Engineering (CE)</option>
                 <option value="ME">Mechanical Engineering (ME)</option>
@@ -210,10 +237,15 @@ const Register = ({ onRegister, onSwitch }) => {
 
         <div className="divider">OR</div>
 
-        <button className="btn-google" onClick={handleGoogleLogin}>
-          <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google" />
-          Continue with Google
-        </button>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => setError('Google Registration Failed')}
+            theme="filled_blue"
+            shape="pill"
+            width="100%"
+          />
+        </div>
 
         <div className="auth-footer">
           Already a member? <span onClick={onSwitch}>Login</span>

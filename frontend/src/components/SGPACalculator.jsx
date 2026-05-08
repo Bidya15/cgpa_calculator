@@ -6,14 +6,15 @@ const SGPACalculator = ({ setView, theme, toggleTheme }) => {
   const [isManual, setIsManual] = useState(false);
   const [sgpaForm, setSgpaForm] = useState({
     group: 'GROUP_B',
-    branch: 'CSE',
-    semester: 1,
+    branch: '',
+    semester: '',
     subjects: []
   });
   const [sgpaResults, setSgpaResults] = useState(null);
 
   // Auto-fill Group based on Branch for Sem 1 & 2
   useEffect(() => {
+    if (!sgpaForm.branch || !sgpaForm.semester) return;
     if (sgpaForm.semester <= 2) {
       const mapping = schema === 'NEP' ? NEP_COURSE_MAPPING : OLD_COURSE_MAPPING;
       let foundGroup = sgpaForm.group;
@@ -28,7 +29,10 @@ const SGPACalculator = ({ setView, theme, toggleTheme }) => {
 
   // Load Curriculum from local courses.js
   useEffect(() => {
-    if (isManual) return;
+    if (isManual || !sgpaForm.branch || !sgpaForm.semester) {
+      if (!isManual) setSgpaForm(prev => ({ ...prev, subjects: [] }));
+      return;
+    }
 
     let subjects = [];
     try {
@@ -179,7 +183,8 @@ const SGPACalculator = ({ setView, theme, toggleTheme }) => {
           }}>
             <div className="form-group">
               <label style={{ fontSize: '0.8rem', opacity: 0.7 }}>Semester</label>
-              <select value={sgpaForm.semester} onChange={(e) => setSgpaForm({ ...sgpaForm, semester: parseInt(e.target.value) })}>
+              <select value={sgpaForm.semester} onChange={(e) => setSgpaForm({ ...sgpaForm, semester: e.target.value ? parseInt(e.target.value) : '' })}>
+                <option value="">Select Semester</option>
                 {[1, 2, 3, 4, 5, 6, 7, 8].map(s => <option key={s} value={s}>Semester {s}</option>)}
               </select>
             </div>
@@ -187,6 +192,7 @@ const SGPACalculator = ({ setView, theme, toggleTheme }) => {
             <div className="form-group">
               <label style={{ fontSize: '0.8rem', opacity: 0.7 }}>Branch</label>
               <select value={sgpaForm.branch} onChange={(e) => setSgpaForm({ ...sgpaForm, branch: e.target.value })}>
+                <option value="">Select Branch</option>
                 {["CSE", "CE", "ME", "EE", "ECE", "ChE", "IE", "IPE", "ETE", "PEI", "EEE"].map(b => (
                   <option key={b} value={b}>{b}</option>
                 ))}
