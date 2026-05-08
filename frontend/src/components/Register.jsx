@@ -1,7 +1,9 @@
+import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { GoogleLogin } from '@react-oauth/google';
 
 const Register = ({ onRegister, onSwitch }) => {
+  // --- State Management ---
   const [formData, setFormData] = useState({ 
     username: '', 
     email: '', 
@@ -11,12 +13,14 @@ const Register = ({ onRegister, onSwitch }) => {
     college: '',
     branch: '' 
   });
+  
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // --- Configuration ---
   const colleges = ["AEC", "JEC", "JIST", "BBEC", "BVEC", "GEC", "DEC", "GIMIT"];
 
   const handleSubmit = async (e) => {
@@ -91,7 +95,7 @@ const Register = ({ onRegister, onSwitch }) => {
     <div className="auth-container animate-fade-in">
       <div className="auth-card">
         <div className="auth-header">
-          <div className="logo-text" style={{fontSize: '2.5rem', marginBottom: '0.5rem'}}>UniCalc</div>
+          <div className="logo-text" style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>UniCalc</div>
           <h2>Join UniCalc</h2>
           <p>Create your academic profile</p>
         </div>
@@ -99,33 +103,33 @@ const Register = ({ onRegister, onSwitch }) => {
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Full Name</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="Your full name"
               value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
             />
           </div>
 
           <div className="form-group">
             <label>Username</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="Pick a unique username"
               value={formData.username}
-              onChange={(e) => setFormData({...formData, username: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
               required
             />
           </div>
 
           <div className="form-group">
             <label>Email Address</label>
-            <input 
-              type="email" 
+            <input
+              type="email"
               placeholder="name@college.edu"
               value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               required
             />
           </div>
@@ -133,14 +137,14 @@ const Register = ({ onRegister, onSwitch }) => {
           <div className="form-grid">
             <div className="form-group">
               <label>College</label>
-              <select value={formData.college} onChange={(e) => setFormData({...formData, college: e.target.value})} required>
+              <select value={formData.college} onChange={(e) => setFormData({ ...formData, college: e.target.value })} required>
                 <option value="" disabled>Select College</option>
                 {colleges.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div className="form-group">
               <label>Branch</label>
-              <select value={formData.branch} onChange={(e) => setFormData({...formData, branch: e.target.value})} required>
+              <select value={formData.branch} onChange={(e) => setFormData({ ...formData, branch: e.target.value })} required>
                 <option value="" disabled>Select Branch</option>
                 <option value="CSE">Computer Science (CSE)</option>
                 <option value="CE">Civil Engineering (CE)</option>
@@ -160,11 +164,11 @@ const Register = ({ onRegister, onSwitch }) => {
             <div className="form-group">
               <label>Password</label>
               <div className="password-input-wrapper" style={{ position: 'relative' }}>
-                <input 
-                  type={showPassword ? "text" : "password"} 
+                <input
+                  type={showPassword ? "text" : "password"}
                   placeholder="Password"
                   value={formData.password}
-                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required
                   style={{ paddingRight: '2.5rem' }}
                 />
@@ -194,11 +198,11 @@ const Register = ({ onRegister, onSwitch }) => {
             <div className="form-group">
               <label>Confirm</label>
               <div className="password-input-wrapper" style={{ position: 'relative' }}>
-                <input 
-                  type={showConfirmPassword ? "text" : "password"} 
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
                   placeholder="Confirm"
                   value={formData.confirmPassword}
-                  onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                   required
                   style={{ paddingRight: '2.5rem' }}
                 />
@@ -229,7 +233,7 @@ const Register = ({ onRegister, onSwitch }) => {
 
           {error && <p className="error-text">{error}</p>}
           {success && <p className="success-text" style={{ color: 'var(--accent-color)', textAlign: 'center', marginBottom: '1rem' }}>{success}</p>}
-          
+
           <button type="submit" className="btn-primary" disabled={loading}>
             {loading ? 'Creating Account...' : 'Create Account'}
           </button>

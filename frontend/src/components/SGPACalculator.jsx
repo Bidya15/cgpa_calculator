@@ -2,20 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { GRADE_POINTS, COURSES, OLD_COURSE_MAPPING, NEP_COURSE_MAPPING } from '../data/courses';
 
 const SGPACalculator = ({ setView, theme, toggleTheme }) => {
+  // --- State ---
   const [schema, setSchema] = useState('NEP');
   const [isManual, setIsManual] = useState(false);
+  const [sgpaResults, setSgpaResults] = useState(null);
+  const [showWarning, setShowWarning] = useState(false);
   const [sgpaForm, setSgpaForm] = useState({
     group: 'GROUP_B',
     branch: '',
     semester: '',
     subjects: []
   });
-  const [sgpaResults, setSgpaResults] = useState(null);
 
+  // --- Effects & Logic ---
   // Auto-fill Group based on Branch for Sem 1 & 2
   useEffect(() => {
-    if (!sgpaForm.branch || !sgpaForm.semester) return;
-    if (sgpaForm.semester <= 2) {
+    const semNum = parseInt(sgpaForm.semester);
+    if (!sgpaForm.branch || !semNum) return;
+    if (semNum <= 2) {
       const mapping = schema === 'NEP' ? NEP_COURSE_MAPPING : OLD_COURSE_MAPPING;
       let foundGroup = sgpaForm.group;
       if (mapping.GROUP_A.includes(sgpaForm.branch)) foundGroup = 'GROUP_A';
@@ -37,10 +41,13 @@ const SGPACalculator = ({ setView, theme, toggleTheme }) => {
     let subjects = [];
     try {
       const courseData = COURSES[schema];
-      if (sgpaForm.semester <= 2) {
-        subjects = courseData.FIRST_YEAR[sgpaForm.group][sgpaForm.semester];
+      const semNum = parseInt(sgpaForm.semester);
+      
+      if (semNum <= 2) {
+        subjects = courseData.FIRST_YEAR[sgpaForm.group]?.[semNum] || [];
       } else {
-        subjects = courseData.BRANCH_WISE[sgpaForm.branch][sgpaForm.semester] || [];
+        const branchData = courseData.BRANCH_WISE[sgpaForm.branch];
+        subjects = branchData?.[semNum] || [];
       }
 
       setSgpaForm(prev => ({
@@ -63,8 +70,7 @@ const SGPACalculator = ({ setView, theme, toggleTheme }) => {
   }, [schema, sgpaForm.group, sgpaForm.branch, sgpaForm.semester, isManual]);
 
 
-  const [showWarning, setShowWarning] = useState(false);
-
+  // --- Handlers ---
   // Calculate SGPA
   const handleFinalize = () => {
     let hasInvalid = false;
@@ -95,7 +101,7 @@ const SGPACalculator = ({ setView, theme, toggleTheme }) => {
 
     sgpaForm.subjects.forEach(slot => {
       const gp = GRADE_POINTS[slot.grade] || 0;
-      const credits = parseFloat(slot.isElective ? slot.selectedSubject.credits : slot.credits) || 0;
+      const credits = parseFloat(slot.isElective ? (slot.selectedSubject?.credits || 0) : slot.credits) || 0;
       totalWeightedPoints += gp * credits;
       totalCredits += credits;
     });

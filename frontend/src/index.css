@@ -1,5 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
+/* 
+  UNI-CALC DESIGN SYSTEM
+  ----------------------
+  1. Variables & Themes
+  2. Base Styles
+  3. Glass Components (Nav, Card, Auth)
+  4. Buttons & Interactive
+  5. Dashboard Elements
+  6. Form & Input Groups
+  7. Data Tables (CGPA/SGPA)
+  8. Responsive Design & Media Queries
+  9. Animations & Utilities
+*/
+
 :root {
   /* Dark Theme (Default) */
   --primary: #6366f1;
