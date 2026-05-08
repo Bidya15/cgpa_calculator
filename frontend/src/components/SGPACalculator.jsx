@@ -219,10 +219,10 @@ const SGPACalculator = ({ setView, theme, toggleTheme }) => {
             )}
           </div>
 
-          <div className="table-responsive" style={{ 
-            overflowX: 'auto', 
-            borderRadius: '16px', 
-            border: '1px solid var(--border-color)', 
+          <div className="table-responsive" style={{
+            overflowX: 'auto',
+            borderRadius: '16px',
+            border: '1px solid var(--border-color)',
             background: 'var(--bg-dark)',
             WebkitOverflowScrolling: 'touch'
           }}>
@@ -329,7 +329,7 @@ const SGPACalculator = ({ setView, theme, toggleTheme }) => {
                 }) : (
                   <tr>
                     <td colSpan="7" style={{ textAlign: 'center', padding: '4rem', opacity: 0.5 }}>
-                      Selection not found in local courses.js
+                      Selection not found in Database. Please select above details or Add New!
                     </td>
                   </tr>
                 )}
